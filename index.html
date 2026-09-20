@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星途练习生：Stellar Drift</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- 标题画面 -->
+  <section id="screen-title" class="screen active">
+    <div class="title-stars"></div>
+    <div class="title-box">
+      <div class="title-sub">大型男团选秀养成 · 互动剧情游戏</div>
+      <h1 class="title-main">星途练习生</h1>
+      <div class="title-en">S T E L L A R&nbsp;&nbsp;D R I F T</div>
+      <div class="title-desc">一百个少年，一个舞台，七分之一的光。<br>你是被推上王座的那个人——临时队长。</div>
+      <div class="title-menu">
+        <button id="btn-new" class="btn-main">开始新的旅程</button>
+        <button id="btn-continue" class="btn-main ghost" disabled>继续旅程</button>
+        <button id="btn-gallery" class="btn-main ghost">星轨图鉴</button>
+      </div>
+      <div class="title-foot">文字剧情游戏 · 全年龄向 · 建议佩戴耳机 · 进度自动保存在本地</div>
+    </div>
+  </section>
+
+  <!-- 命名画面 -->
+  <section id="screen-name" class="screen">
+    <div class="name-box">
+      <div class="name-label">在评级表写下你的名字——</div>
+      <input id="input-name" maxlength="8" placeholder="最多8个字" autocomplete="off">
+      <div class="name-tip">默认：江晚 · 你将与七个人共享十二周的星光</div>
+      <div class="name-btns">
+        <button id="btn-name-ok" class="btn-main">落 笔</button>
+        <button id="btn-name-back" class="btn-ghost">返回</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 游戏主画面 -->
+  <section id="screen-game" class="screen">
+    <!-- 顶部状态栏 -->
+    <header id="topbar">
+      <div class="tb-left">
+        <span id="tb-phase" class="tb-chip">选秀 · 第1周</span>
+        <span id="tb-loc" class="tb-loc">训练基地</span>
+      </div>
+      <div class="tb-mid">
+        <div id="tb-title">序章</div>
+      </div>
+      <div class="tb-right">
+        <button class="tb-btn" id="btn-hearts" title="心动值">♡</button>
+        <button class="tb-btn" id="btn-menu" title="菜单">☰</button>
+      </div>
+    </header>
+
+    <!-- 舞台区 -->
+    <div id="stage">
+      <div id="bg-layer"></div>
+      <div id="danmaku-layer"></div>
+      <div id="chara-layer">
+        <img id="chara-img" alt="" hidden>
+        <div id="chara-nameplate" hidden></div>
+      </div>
+
+      <!-- 心动面板 -->
+      <aside id="hearts-panel" class="panel" hidden>
+        <h3>心动值</h3>
+        <div id="hearts-list"></div>
+      </aside>
+
+      <!-- 系统弹层：热搜/手机/日记 -->
+      <div id="sys-overlay" hidden>
+        <div class="sys-card" id="sys-card"></div>
+      </div>
+    </div>
+
+    <!-- 文本框 -->
+    <div id="dialogbox">
+      <div id="speaker"></div>
+      <div id="text" ></div>
+      <div id="next-hint">▼</div>
+    </div>
+
+    <!-- 选项层 -->
+    <div id="choices" hidden></div>
+  </section>
+
+  <!-- 章节选择 / 图鉴 -->
+  <section id="screen-gallery" class="screen">
+    <header class="gal-head"><h2>星轨图鉴</h2><button id="btn-gal-back" class="btn-ghost">返回</button></header>
+    <div class="gal-body">
+      <h3 class="gal-sec">旅程章节 <span id="gal-progress"></span></h3>
+      <div id="gal-chapters" class="gal-grid"></div>
+      <h3 class="gal-sec">结局收集 <span id="gal-endings-count"></span></h3>
+      <div id="gal-endings" class="gal-grid"></div>
+      <button id="btn-reset" class="btn-danger">清除全部存档</button>
+    </div>
+  </section>
+
+  <!-- 结局画面 -->
+  <section id="screen-ending" class="screen">
+    <div class="ending-box">
+      <div class="ending-label">E N D I N G</div>
+      <h2 id="ending-name"></h2>
+      <div id="ending-verdict"></div>
+      <div id="ending-final-hearts"></div>
+      <div class="ending-btns">
+        <button id="btn-end-gallery" class="btn-main">回到图鉴</button>
+        <button id="btn-end-restart" class="btn-ghost">重新开始</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 暂停菜单 -->
+  <div id="pause-menu" hidden>
+    <div class="pm-card">
+      <h3>菜单</h3>
+      <button class="pm-btn" id="pm-resume">继续游戏</button>
+      <button class="pm-btn" id="pm-save">保存进度</button>
+      <button class="pm-btn" id="pm-gallery">星轨图鉴</button>
+      <button class="pm-btn" id="pm-title">回到标题</button>
+      <label class="pm-auto"><input type="checkbox" id="pm-autospeed" checked> 快速文本</label>
+    </div>
+  </div>
+
+  <div id="toast" hidden></div>
+</div>
+
+<script src="data/characters.js"></script>
+<script src="data/story.js"></script>
+<script src="data/ch.js"></script>
+<script src="engine.js"></script>
+</body>
+</html>
