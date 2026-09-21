@@ -96,6 +96,8 @@
       <div id="gal-chapters" class="gal-grid"></div>
       <h3 class="gal-sec">结局收集 <span id="gal-endings-count"></span></h3>
       <div id="gal-endings" class="gal-grid"></div>
+      <h3 class="gal-sec">CG 回忆 <span id="gal-cg-count"></span></h3>
+      <div id="gal-cgs" class="gal-grid cg-grid"></div>
       <button id="btn-reset" class="btn-danger">清除全部存档</button>
     </div>
   </section>
@@ -103,6 +105,7 @@
   <!-- 结局画面 -->
   <section id="screen-ending" class="screen">
     <div class="ending-box">
+      <img id="ending-cg" alt="" hidden>
       <div class="ending-label">E N D I N G</div>
       <h2 id="ending-name"></h2>
       <div id="ending-verdict"></div>
@@ -123,6 +126,15 @@
       <button class="pm-btn" id="pm-gallery">星轨图鉴</button>
       <button class="pm-btn" id="pm-title">回到标题</button>
       <label class="pm-auto"><input type="checkbox" id="pm-autospeed" checked> 快速文本</label>
+    </div>
+  </div>
+
+  <!-- CG 灯箱 -->
+  <div id="cg-lightbox" hidden>
+    <div class="lb-inner">
+      <img id="lb-img" alt="">
+      <div id="lb-name"></div>
+      <div class="lb-hint">点击任意处关闭</div>
     </div>
   </div>
 

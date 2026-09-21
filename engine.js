@@ -28,9 +28,10 @@
   const fmtText = (s) => esc(s).replace(/\n/g,"<br>");
   const SAVE_KEY = "stellardrift_save_v1";
 
-  const BG_NAME = { lobby:"训练基地大厅", dorm:"宿舍", studio:"练习室", stage:"主舞台", office:"导播室", rooftop:"天台",
-    villa:"漂流屋", pool:"泳池", garden:"花园迷宫", night:"夜景", rain:"雨中", cafe:"咖啡书屋",
-    greenroom:"后台休息室", corridor:"走廊" };
+  const BG_NAME = { lobby:"训练基地大厅", dorm:"宿舍", studio:"练习室 · 夜", stage:"主舞台", office:"导播室", rooftop:"公司天台",
+    villa:"漂流别墅", pool:"泳池", garden:"花园迷宫", night:"夜行大巴", rain:"雨中", cafe:"咖啡书屋",
+    greenroom:"后台休息室", corridor:"走廊", backstage:"后台通道", banquet:"庆功宴会场", ferris:"摩天轮",
+    interview:"访谈演播室", meeting_room:"会议室", outdoor_stage:"露天舞台", studio_day:"练习室", villa_night:"漂流别墅 · 夜" };
 
   /* ---------- 状态 ---------- */
   let S = null;           // 存档状态
@@ -133,7 +134,11 @@
 
     switch (node.t) {
       case "bg": {
-        $("#bg-layer").className = "bg-" + (node.v || "night");
+        const v = node.v || "night";
+        const layer = $("#bg-layer");
+        layer.className = "bg-" + v;
+        layer.style.backgroundImage = "url(assets/bg/" + v + ".jpg)";
+        if (BG_NAME[v]) $("#tb-loc").textContent = BG_NAME[v];
         advance();
         break;
       }
@@ -240,8 +245,10 @@
     const img = $("#chara-img"), np = $("#chara-nameplate");
     const c = who && window.CHARS[who];
     if (c && c.hasImg && c.img) {
-      img.src = c.img; img.hidden = false;
-      np.textContent = who + " · " + c.en; np.hidden = false;
+      if (img.src.indexOf(c.img) === -1 || img.hidden) {
+        img.classList.remove("chara-anim"); void img.offsetWidth; img.classList.add("chara-anim");
+      }
+      img.src = c.img; img.hidden = false; np.hidden = true;
     } else if (who) {
       img.hidden = true;
       np.textContent = who; np.hidden = false;
@@ -317,6 +324,8 @@
     const ch = currentChapter();
     if (ch && !S.endings.includes(ch.id)) { S.endings.push(ch.id); }
     save();
+    const cg = $("#ending-cg");
+    cg.src = "assets/cg/" + ch.id + ".jpg"; cg.hidden = false;
     $("#ending-name").textContent = (window.ENDING_NAMES[ch.id]) || ch.title || "旅程结束";
     $("#ending-verdict").textContent = (cur.verdict) || "星光落进眼里，从此夜路有了灯。";
     $("#ending-final-hearts").innerHTML = "最终心动值<br>" +
@@ -349,6 +358,30 @@
       ge.appendChild(d);
     });
     $("#gal-endings-count").textContent = `${S.endings.length} / ${window.ENDING_IDS.length}`;
+    renderCgGallery();
+  }
+
+  function renderCgGallery() {
+    const g = $("#gal-cgs");
+    g.innerHTML = "";
+    window.ENDING_IDS.forEach(id => {
+      const seen = S.endings.includes(id);
+      const d = document.createElement("div");
+      d.className = "gal-cg" + (seen ? "" : " locked");
+      if (seen) {
+        d.innerHTML = `<img loading="lazy" src="assets/cg/${id}.jpg" alt=""><span>${esc(window.ENDING_NAMES[id]||"")}</span>`;
+        d.onclick = () => openLightbox(id);
+      } else {
+        d.innerHTML = `<div class="cg-lock">C G</div><span>未解锁</span>`;
+      }
+      g.appendChild(d);
+    });
+  }
+
+  function openLightbox(id) {
+    $("#lb-img").src = "assets/cg/" + id + ".jpg";
+    $("#lb-name").textContent = window.ENDING_NAMES[id] || "";
+    $("#cg-lightbox").hidden = false;
   }
 
   /* ---------- 事件绑定 ---------- */
@@ -399,6 +432,7 @@
 
     $("#btn-end-gallery").onclick = () => { renderGallery(); show("#screen-gallery"); };
     $("#btn-end-restart").onclick = () => { show("#screen-title"); };
+    $("#cg-lightbox").addEventListener("click", () => { $("#cg-lightbox").hidden = true; });
 
     document.addEventListener("keydown", (e) => {
       if (!$("#screen-game").classList.contains("active")) return;
@@ -407,11 +441,22 @@
     });
   }
 
+  /* ---------- 资源预加载 ---------- */
+  function preloadAssets() {
+    setTimeout(() => {
+      const bgs = ["backstage","banquet","corridor","dorm","ferris","garden","greenroom","interview","lobby","meeting_room","night","outdoor_stage","park","pool","rooftop","stage","studio","studio_day","villa","villa_night"];
+      bgs.forEach(v => { const i = new Image(); i.src = "assets/bg/" + v + ".jpg"; });
+      Object.values(window.CHARS || {}).forEach(c => { if (c.img) { const i = new Image(); i.src = c.img; } });
+      (window.ENDING_IDS || []).forEach(id => { const i = new Image(); i.src = "assets/cg/" + id + ".jpg"; });
+    }, 800);
+  }
+
   /* ---------- 启动 ---------- */
   function init() {
     const s = load();
     if (s && s.chIndex > 0) { $("#btn-continue").disabled = false; }
     bind();
+    preloadAssets();
     show("#screen-title");
   }
   document.addEventListener("DOMContentLoaded", init);
