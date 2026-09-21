@@ -1,5 +1,8 @@
 /* ============ 星途练习生：Stellar Drift — 样式 ============ */
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+/* 关键修复：hidden 属性必须真正隐藏元素，否则会被下方 #pause-menu/#choices/#sys-overlay
+   等覆盖层的 display:flex 覆盖，导致遮罩常驻、挡住按钮点击 */
+[hidden] { display: none !important; }
 html,body { height:100%; }
 body {
   font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
